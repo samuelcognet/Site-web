@@ -406,6 +406,7 @@ footer a, i {
 @media (max-width: 1024px) {
     
     body {
+        height: var(--app-height);
         overflow-y: auto;
     }
 
@@ -508,7 +509,8 @@ footer a, i {
 @media (max-width: 480px) { /* (max-height: 1050px)*/
     
     body {
-        overflow-y: auto;
+        height: var(--app-height);
+        overflow-y: auto;        
     }
 
     header, footer {
