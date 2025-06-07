@@ -6,6 +6,14 @@ const HomeCellsContainer = document.querySelectorAll('.HomeCellContainer');
 const header = document.querySelector('header');
 const footer = document.querySelector('footer');
 
+// Adaptation de la hauteur pour le format téléphone (overlay safari non pris en compte dans 100vh)
+const setHeight = () => {
+  document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
+};
+
+window.addEventListener('resize', setHeight);
+setHeight();
+
 // Détection du scrolling
 let hasScrolled = false;
 
