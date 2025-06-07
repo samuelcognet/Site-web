@@ -1,0 +1,597 @@
+/* augment-disable */
+
+/* 
+Plan du site: site qui tient sur une seule page web (pas de scroll bar / overflow). Afin d'éviter les 
+conflits lors du chargement du site, commencer par styliser le header puis le footer et enfin le main 
+(occupe l'espace restant entre header et footer).
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;600&display=swap');
+
+:root {
+    --primary-color: #1B1D27;
+    --accent-color: #3498db;
+    --text-color: #ffffff;
+    --highlight-color: #2ecc71;
+    --inclinaison: 50px;
+    --delay: 0.5s;
+    --transition-click: cubic-bezier(0.165, 0.84, 0.44, 1);
+    --transition-fast: cubic-bezier(0.075, 0.82, 0.165, 1) 0.4s;
+    --padx: 4em;
+    --pady: 2em;
+}
+
+
+html {
+    font-family: 'Barlow', Arial, sans-serif;    
+}
+
+
+/* Applique par défaut un padding / margin nul à tous les éléments */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+
+html, body {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+}
+
+
+header {
+    height: 4em;
+    padding-left: 4em;
+    padding-right: 4em;
+    width: 100%;
+    background-color: #402ecc;
+    flex-shrink: 0;
+    box-sizing: border-box;
+
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: rgba(27, 29, 39, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.header-mobile {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    letter-spacing: 2px;
+    font-size: 22px;
+    font-weight: 300;
+    user-select: none;
+}
+
+
+header:hover {
+    box-shadow: 0 2px 10px rgba(255, 255, 255, 0.5);
+}
+
+header nav {
+    height: 100%;
+    width: 100%;
+}
+
+
+header nav ul {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    list-style-type: none;
+}
+
+
+header nav ul li {
+    position: relative; /* Positionnement par rapport au parent (<ul></ul>) */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 25%;
+    font-size: 1.2em;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-color);
+    transition: var(--transition-fast);
+    user-select: none;
+}
+
+
+/* Permet de créer la barre qui surligne les <li> du header. */
+header nav ul li::after { 
+    content: '';
+    position: absolute; /* ::after: élément créé // parent. absolute permet de le positionner juste après son parent */
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 3px;
+    background-color: var(--accent-color);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+
+.header-li::after { 
+    width: 60%;
+}
+
+
+main {
+    flex-grow: 1; /* Prends tout l'espace restant entre le header et le footer */
+    display: flex; /* Active flexbox pour le positionnement des enfants */
+    padding: 2em 4em;
+}
+
+
+main .container {
+    display: flex;
+    justify-content: center; /* Espacement uniforme entre les enfants */
+    width: 100%;
+    height: 100%;
+}
+
+
+.HomeCell {
+    width: 25%;
+    max-height: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all var(--transition-click) var(--delay);
+}
+
+.overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(rgba(2, 20, 58, .7) 100%, rgba(7, 14, 29, 0) 100%);
+    opacity: 0.5;
+}
+
+/* Affiché uniquement en verison mobile -> voir @media */
+.title-container {
+    display: none;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.visible {
+    display: flex !important;
+}
+
+.expand-hover {
+    width: 30%;
+}
+
+/* 400px minimum */
+.expand-click {
+    width: max(400px, 40%);
+}
+
+.HomeCell video {
+    position: absolute;         /* empêche la vidéo de forcer la taille */
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.HomeCellFilter {
+    height: 100%;
+    width: 100%;
+    display: none;
+    background: rgba(0, 0, 0, 0.6);
+    animation: filterOpacity var(--transition-click) var(--delay);
+}
+
+
+.HomeCellContainer {
+    position: absolute;
+    bottom: 4em;
+    padding: 0 2em;
+    width: 100%;
+    box-sizing: border-box;
+    display: block;
+    flex-direction: column;
+}
+
+
+.HomeCellContainer h2 {
+    font-size: 2em;
+    font-weight: 300;
+    color: whitesmoke;
+    position: relative;
+    width: 100%; 
+}
+
+
+.HomeCellContainer h2::after {
+    content: '';
+    left: 0;
+    bottom: -20px;
+    position: absolute;
+    height: 2px;
+    width: 100%;
+    background-color: var(--accent-color);
+    animation: lineWidth .5s cubic-bezier(.5, 1, .89, 1);
+}
+
+
+.HomeCellContainer p {
+    margin-top: 40px;
+    font-size: 1em;;
+    max-width: 95%;
+}
+
+
+.HomeCellContainer #hide-content-btn {
+    display: block;
+    max-width: max-content;
+    margin: 0 auto;
+    margin-top: 2em;
+    border: 1px solid var(--accent-color);
+    background-color: transparent;
+    color: var(--text-color);
+    padding: 1em 2em;
+    text-transform: uppercase;
+    text-align: center;
+    letter-spacing: 2px;
+    transition: all .3s ease-in-out;
+}
+
+
+.HomeCellContainer #hide-content-btn:hover {
+    background-color: #3498db;
+}
+
+/* Footer Styles */
+footer {
+    flex-shrink: 0;
+    height: 4em;
+    padding: 0 4em;
+    box-sizing: border-box;
+    color: var(--text-color);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(27, 29, 39, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+footer .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+.credits {
+    opacity: 0.8;
+}
+
+.social-media {
+    display: flex;
+    list-style: none;
+    justify-content: center;
+    gap: 1em;
+}
+
+.social-media li a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.social-media li a:hover {
+    background-color: var(--accent-color);
+    transform: translateY(-3px);
+}
+
+.icon {
+    width: 18px;
+    height: 18px;
+}
+
+footer a, i {
+    color:#ffffff;
+    text-decoration: none;
+}
+
+
+/* keyframes pour les animations des éléments lors du clic sur une cellule */
+
+/* Animation du filtre - voir HomeCellContent.animation */
+@keyframes filterOpacity {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Animation du texte dans la balise .HomeCell p */
+@keyframes textOpacity {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.ContentAnimation {
+    animation: textOpacity .5s cubic-bezier(.5, 1, .89, 1);
+}
+
+/* Animation de la ligne qui surligne le titre */
+@keyframes lineWidth {
+    from {
+        width: 0%;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+.invisible {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Grands écrans */
+@media (min-width: 1921px) {
+    body {
+        font-size: 20px;
+    }
+
+    header, footer {
+        height: 5em;
+        padding: 0 5em;
+    }
+
+    main {
+        padding: 2.5em 5em;
+    }
+
+}
+
+@media (max-width: 1200px) {
+
+    header, footer {
+        padding: 0 1em;
+    }
+
+    main {
+        padding: 2em 1em;
+    }
+}
+
+/* Tablettes */
+@media (max-width: 1024px) {
+    
+    body {
+        overflow-y: auto;
+    }
+
+    header {
+        height: 6em;
+    }
+
+    footer {
+        height: 9em;
+    }
+
+    .header-mobile {
+        display: flex;
+        font-size: 24px;
+    }
+
+    header nav {
+        display: none;
+    }
+
+    footer .container {
+        flex-direction: column;
+        justify-content: space-evenly;
+        align-items: center;
+    }
+
+    .credits {
+        font-size: 13px;
+    }
+
+    main {
+        padding: 2em 0; /* Padding haut/bas = 2em, gauche/droite = 0px; */
+    }
+
+    main .container {
+        flex-direction: column;
+    }
+
+    .HomeCell {
+        /* font-size: 10px; */
+        width: 100%;
+        height: calc((100vh - 16em)/4); /* 14em = hauteur(footer) + hauteur(header) +padding(top) + padding(bot) */
+    }
+
+    .title-container {
+        width: 100%;
+        display: flex; /* Aligne les enfants sur la même ligne */
+        align-items: center; /* Centre verticalement les enfants */
+        justify-content: space-between; /* Espacement entre les éléments */
+        padding: 0 4em; /* Ajoute un espace intérieur */
+        z-index: 10;
+    }
+
+    .title-container h2 {
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 100;
+        z-index: 10;
+    }
+
+    .title-container i {
+        font-size: 1.5em;
+        transform: rotate(90deg);
+        opacity: 0;
+    }
+
+    /* Ajoute l'effet d'expansion */
+    .HomeCell.expanded {
+        height: 350px; 
+    }
+
+    .HomeCellContainer {
+        position: absolute;
+        bottom: unset;
+        margin-top: 6em;
+        padding: 0 1em;
+    }
+
+    .HomeCellContainer h2 {
+        font-size: 1.4em;
+    }
+
+    .HomeCellContainer h2::after {
+        bottom: -10px;
+        height: 1px;
+        max-width: 95%;
+    }
+
+    .HomeCellContainer p {
+        margin-top: 2em;
+        max-width: 95%
+    }
+
+    /* .HomeCellContainer #hide-content-btn {
+        width
+    } */
+}
+
+/* Téléphones portables */
+@media (max-width: 480px) { /* (max-height: 1050px)*/
+    
+    body {
+        overflow-y: auto;
+    }
+
+    header, footer {
+        height: 5em;
+    }
+
+    .header-mobile {
+        display: flex;
+    }
+
+    header nav {
+        display: none;
+    }
+
+    footer .container {
+        flex-direction: column;
+        justify-content: space-evenly;
+        align-items: center;
+    }
+
+    .credits {
+        font-size: 13px;
+    }
+
+    main {
+        padding: 2em 0; /* Padding haut/bas = 2em, gauche/droite = 0px; */
+    }
+
+    main .container {
+        flex-direction: column;
+    }
+
+    .HomeCell {
+        /* font-size: 10px; */
+        width: 100%;
+        height: calc((100vh - 14em)/4); /* 14em = hauteur(footer) + hauteur(header) +padding(top) + padding(bot) */
+    }
+
+    .title-container {
+        width: 100%;
+        display: flex; /* Aligne les enfants sur la même ligne */
+        align-items: center; /* Centre verticalement les enfants */
+        justify-content: space-between; /* Espacement entre les éléments */
+        padding: 0 2em; /* Ajoute un espace intérieur */
+        z-index: 10;
+    }
+
+    .title-container h2 {
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 100;
+        z-index: 10;
+    }
+
+    .title-container i {
+        font-size: 1.5em;
+        transform: rotate(90deg);
+        opacity: 0;
+    }
+
+    /* Ajoute l'effet d'expansion */
+    .HomeCell.expanded {
+        height: 350px; 
+    }
+
+    .HomeCellContainer {
+        position: absolute;
+        bottom: unset;
+        margin-top: 2em;
+        padding: 0 1em;
+    }
+
+    .HomeCellContainer h2 {
+        font-size: 1.3em;
+    }
+
+    .HomeCellContainer h2::after {
+        bottom: -10px;
+        height: 1px;
+    }
+
+    .HomeCellContainer p {
+        margin-top: 2em;
+        max-width: 100%
+    }    
+}
