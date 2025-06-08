@@ -14,7 +14,6 @@ const setHeight = () => {
 window.addEventListener('resize', setHeight);
 setHeight();
 
-
 window.addEventListener('load', () => {
     // Animate the header
 
@@ -143,40 +142,40 @@ homeCells.forEach((cell, index) => {
     let container = HomeCellsContainer[index];
 
     // écran tactile = mobile / tablette
-    if ('ontouchstart' in window) {
+    // if ('ontouchstart' in window) {
 
-        cell.addEventListener('touchstart', (event) => {
-            let startY = event.touches[0].clientY;
+    //     cell.addEventListener('touchstart', (event) => {
+    //         let startY = event.touches[0].clientY;
 
-            cell.addEventListener('touchend', (event) => {
-                let endY = event.touches[0].clientY;
-                let dy = Math.abs(endY - startY);
+    //         cell.addEventListener('touchend', (event) => {
+    //             let endY = event.touches[0].clientY;
+    //             let dy = Math.abs(endY - startY);
 
-                // Important de vérifier cette condition dans la fonction 'touchend' sinon exécution du if sans attendre le calcul de dy
-                if (dy <= 20) {
-                    ResetAllCells(index);
-                    OnCellClick(cell, filter, container);
-                    if (index == 2) {document.querySelector('video').play();};
-                };
-            });
-        });
-    }
+    //             // Important de vérifier cette condition dans la fonction 'touchend' sinon exécution du if sans attendre le calcul de dy
+    //             if (dy <= 20) {
+    //                 ResetAllCells(index);
+    //                 OnCellClick(cell, filter, container);
+    //                 if (index == 2) {document.querySelector('video').play();};
+    //             };
+    //         });
+    //     });
+    // }
 
     // écran non-tactile = ordinateur
-    else {
-        cell.addEventListener('mouseenter', () => {
-            OnCellEnter(cell, li);
-        });
+    // else {
+    cell.addEventListener('mouseenter', () => {
+        OnCellEnter(cell, li);
+    });
 
-        cell.addEventListener('mouseleave', () => {
-            OnCellLeave(cell, li, filter, container);
-        });
+    cell.addEventListener('mouseleave', () => {
+        OnCellLeave(cell, li, filter, container);
+    });
 
-        cell.addEventListener('click', () => {
-            ResetAllCells(index);
-            OnCellClick(cell, filter, container);
-        });
-    };
+    cell.addEventListener('click', () => {
+        ResetAllCells(index);
+        OnCellClick(cell, filter, container);
+    });
+    // };
 });
 
 document.querySelector('#hide-content-btn').addEventListener('click', (event) => {
