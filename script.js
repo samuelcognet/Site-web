@@ -14,25 +14,6 @@ const setHeight = () => {
 window.addEventListener('resize', setHeight);
 setHeight();
 
-// Détection du scrolling
-if ('ontouchstart' in window) {
-    let startY;
-    let hasClicked;
-
-    document.addEventListener("touchstart", function(event) {
-        startY = event.touches[0].clientY;
-        hasClicked = true;
-    });
-
-    document.addEventListener("touchend", function(event) {
-        let endY = event.changedTouches[0].clientY;
-        let distance = Math.abs(endY - startY);
-
-        if (distance > 10) { // Seuil ajustable
-            hasClicked = false;
-        }
-    });
-};
 
 window.addEventListener('load', () => {
     // Animate the header
@@ -163,10 +144,23 @@ homeCells.forEach((cell, index) => {
 
     // écran tactile = mobile / tablette
     if ('ontouchstart' in window) {
-        if (hasClicked) {
-            ResetAllCells(index);
-            OnCellClick(cell, filter, container);
-        };        
+
+        let startY;
+        cell.addEventListener('touchstart', (event) => {
+            startY = event.touches[0].clientY;
+        });
+
+        cell.addEventListener('touchend', (event) => {
+            let endY = event.touches[0].clientY;
+            let dy = Math.abs(endY - startY);
+
+            // Important de vérifier cette condition dans la fonction 'touchend' sinon exécution du if sans attendre le calcul de dy
+            if (dy <= 10) {
+                ResetAllCells(index);
+                OnCellClick(cell, filter, container);
+                if (index == 2) {document.querySelector('video').play();};
+            };
+        });
     }
 
     // écran non-tactile = ordinateur
