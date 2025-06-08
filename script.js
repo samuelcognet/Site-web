@@ -155,7 +155,7 @@ homeCells.forEach((cell, index) => {
             let dy = Math.abs(endY - startY);
 
             // Important de vérifier cette condition dans la fonction 'touchend' sinon exécution du if sans attendre le calcul de dy
-            if (dy <= 10) {
+            if (dy <= 50) {
                 ResetAllCells(index);
                 OnCellClick(cell, filter, container);
                 if (index == 2) {document.querySelector('video').play();};
