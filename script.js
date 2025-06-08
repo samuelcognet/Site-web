@@ -145,21 +145,20 @@ homeCells.forEach((cell, index) => {
     // écran tactile = mobile / tablette
     if ('ontouchstart' in window) {
 
-        let startY;
         cell.addEventListener('touchstart', (event) => {
-            startY = event.touches[0].clientY;
-        });
+            let startY = event.touches[0].clientY;
 
-        cell.addEventListener('touchend', (event) => {
-            let endY = event.touches[0].clientY;
-            let dy = Math.abs(endY - startY);
+            cell.addEventListener('touchend', (event) => {
+                let endY = event.touches[0].clientY;
+                let dy = Math.abs(endY - startY);
 
-            // Important de vérifier cette condition dans la fonction 'touchend' sinon exécution du if sans attendre le calcul de dy
-            if (dy <= 50) {
-                ResetAllCells(index);
-                OnCellClick(cell, filter, container);
-                if (index == 2) {document.querySelector('video').play();};
-            };
+                // Important de vérifier cette condition dans la fonction 'touchend' sinon exécution du if sans attendre le calcul de dy
+                if (dy <= 20) {
+                    ResetAllCells(index);
+                    OnCellClick(cell, filter, container);
+                    if (index == 2) {document.querySelector('video').play();};
+                };
+            });
         });
     }
 
