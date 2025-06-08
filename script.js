@@ -15,11 +15,24 @@ window.addEventListener('resize', setHeight);
 setHeight();
 
 // Détection du scrolling
-let hasScrolled = false;
+if ('ontouchstart' in window) {
+    let startY;
+    let hasClicked;
 
-document.addEventListener("touchmove", () => {
-    hasScrolled = true; // L'utilisateur a scrollé
-});
+    document.addEventListener("touchstart", function(event) {
+        startY = event.touches[0].clientY;
+        hasClicked = true;
+    });
+
+    document.addEventListener("touchend", function(event) {
+        let endY = event.changedTouches[0].clientY;
+        let distance = Math.abs(endY - startY);
+
+        if (distance > 10) { // Seuil ajustable
+            hasClicked = false;
+        }
+    });
+};
 
 window.addEventListener('load', () => {
     // Animate the header
@@ -148,26 +161,29 @@ homeCells.forEach((cell, index) => {
     let filter = HomeCellsFilter[index];
     let container = HomeCellsContainer[index];
 
-    cell.addEventListener('mouseenter', () => {
-        OnCellEnter(cell, li);
-    });
-
-    cell.addEventListener('mouseleave', () => {
-        OnCellLeave(cell, li, filter, container);
-    });
-
-    cell.addEventListener('click', () => {
-
-        // Click sans scrolling
-        if (!hasScrolled) {
+    // écran tactile = mobile / tablette
+    if ('ontouchstart' in window) {
+        if (hasClicked) {
             ResetAllCells(index);
             OnCellClick(cell, filter, container);
-        };
-        
-        // On réinitialise l'indcateur de scrolling
-        hasScrolled = false;
-    });
+        };        
+    }
 
+    // écran non-tactile = ordinateur
+    else {
+        cell.addEventListener('mouseenter', () => {
+            OnCellEnter(cell, li);
+        });
+
+        cell.addEventListener('mouseleave', () => {
+            OnCellLeave(cell, li, filter, container);
+        });
+
+        cell.addEventListener('click', () => {
+            ResetAllCells(index);
+            OnCellClick(cell, filter, container);
+        });
+    };
 });
 
 document.querySelector('#hide-content-btn').addEventListener('click', (event) => {
