@@ -162,6 +162,15 @@ main .container {
     transition: all var(--transition-click) var(--delay);
 }
 
+.expand-hover {
+    width: 30%;
+}
+
+/* 400px minimum */
+.expand-click {
+    width: max(400px, 40%);
+}
+
 .overlay {
     position: absolute;
     width: 100%;
@@ -173,6 +182,15 @@ main .container {
     opacity: 0.5;
 }
 
+.HomeCellFilter {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    background: rgba(0, 0, 0, 0.6);
+    opacity: 0;
+}
+
 /* Affiché uniquement en verison mobile -> voir @media */
 .title-container {
     display: none;
@@ -182,41 +200,24 @@ main .container {
     display: none !important;
 }
 
-.visible {
-    display: flex !important;
-}
-
-.expand-hover {
-    width: 30%;
-}
-
-/* 400px minimum */
-.expand-click {
-    width: max(400px, 40%);
+.visible { /* forwards permet de maintenir l'état en fin d'animation */
+    animation: filterOpacity var(--transition-click) var(--delay) forwards;
 }
 
 .HomeCell video {
-    position: absolute;         /* empêche la vidéo de forcer la taille */
+    position: absolute; /* empêche la vidéo de forcer la taille */
     top: 0;
     left: 50%;
     transform: translateX(-50%);
     height: 100%;
     width: 100%;
     object-fit: cover;
-}
-
-.HomeCellFilter {
-    height: 100%;
-    width: 100%;
-    display: none;
-    background: rgba(0, 0, 0, 0.6);
-    animation: filterOpacity var(--transition-click) var(--delay);
+    opacity: 0;
 }
 
 
 .HomeCellContainer {
     position: absolute;
-    bottom: 4em;
     padding: 0 2em;
     width: 100%;
     box-sizing: border-box;
@@ -403,7 +404,7 @@ footer a, i {
 }
 
 /* Tablettes */
-@media (max-width: 1024px) {
+@media (max-width: 1024px) and (min-width: 480px) {
     
     body {
         height: var(--app-height);
@@ -446,7 +447,6 @@ footer a, i {
     }
 
     .HomeCell {
-        /* font-size: 10px; */
         width: 100%;
         height: calc((100vh - 16em)/4); /* 14em = hauteur(footer) + hauteur(header) +padding(top) + padding(bot) */
     }
@@ -473,15 +473,13 @@ footer a, i {
         opacity: 0;
     }
 
-    /* Ajoute l'effet d'expansion */
+    /* Ajoute l'effet d'expansion - voir js */
     .HomeCell.expanded {
-        height: 350px; 
+        height: 350px;
     }
 
     .HomeCellContainer {
-        position: absolute;
-        bottom: unset;
-        margin-top: 6em;
+        top: 3em;
         padding: 0 1em;
     }
 
@@ -499,10 +497,6 @@ footer a, i {
         margin-top: 2em;
         max-width: 95%
     }
-
-    /* .HomeCellContainer #hide-content-btn {
-        width
-    } */
 }
 
 /* Téléphones portables */
@@ -544,7 +538,6 @@ footer a, i {
     }
 
     .HomeCell {
-        /* font-size: 10px; */
         width: 100%;
         height: calc((100vh - 14em)/4); /* 14em = hauteur(footer) + hauteur(header) +padding(top) + padding(bot) */
     }
@@ -577,8 +570,7 @@ footer a, i {
     }
 
     .HomeCellContainer {
-        position: absolute;
-        bottom: unset;
+        top: 0;
         margin-top: 2em;
         padding: 0 1em;
     }

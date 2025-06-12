@@ -6,6 +6,10 @@ const HomeCellsContainer = document.querySelectorAll('.HomeCellContainer');
 const header = document.querySelector('header');
 const footer = document.querySelector('footer');
 
+// delay pour que la fin d'animation de la cellule coïncide avec le début d'animation du contenu.
+const element = document.documentElement;
+const delay = 1000 * parseFloat(getComputedStyle(element).getPropertyValue("--delay")) + 100;
+
 // Adaptation de la hauteur pour le format téléphone (overlay safari non pris en compte dans 100vh)
 const setHeight = () => {
   document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
@@ -40,11 +44,6 @@ window.addEventListener('load', () => {
 });
 
 function OnCellEnter(cell, li) {
-    // Désactivé pour la version mobile
-    if (screen.width <= 1024 ) {
-        return;
-    }
-
     cell.classList.add('expand-hover');
     li.style.color = 'var(--accent-color)';
     li.classList.add('header-li');
@@ -57,23 +56,9 @@ function OnCellLeave(cell, li, filter, container) {
         return;
     }
 
-    // On 'désactive' la fonction pour les téléphones portables: tout est géré par OnCellClick
-    if (screen.width <= 1024 ) {
-        return;
-    }
-
     cell.classList.remove('expand-hover');
-    cell.classList.remove('expand-click');
-
     li.style.color = 'var(--text-color)';
     li.classList.remove('header-li');
-    filter.classList.add('invisible');
-    container.classList.add('invisible');
-
-    Array.from(container.children).forEach((child, index) => {
-        child.classList.add('invisible');
-        child.classList.remove('ContentAnimation');
-    });
 };
 
 function ResetAllCells(idx) {
@@ -103,36 +88,47 @@ function ResetAllCells(idx) {
 };
 
 
-function OnCellClick(cell, filter, container) {
-
-    // delay pour que la fin d'animation de la cellule coïncide avec le début d'animation du contenu.
-    const element = document.documentElement;
-    const delay = 1000 * parseFloat(getComputedStyle(element).getPropertyValue("--delay")) + 100;
+function OnCellClick(cell, filter, container, index) {
 
     // Ecrans d'ordinateurs
     if (screen.width >= 1025) {
-        // cell.style.width = '40%';
         cell.classList.remove('expand-hover');
         cell.classList.toggle('expand-click');
-        filter.classList.toggle('visible');
-        container.classList.toggle('invisible');
-    } 
+
+        if (mask && index ===2 ) {
+            mask = false;
+        }
+        
+        else {
+            filter.classList.toggle('visible');
+            container.classList.toggle('invisible');
+            mask = false;
+        }
+    };
     
 
-    // Téléphones
+    // Téléphones et tablettes
     if (screen.width <= 1024) { 
         cell.classList.toggle('expanded'); // Ajoute ou enlève la classe selon si l'élément la possède ou non
-        filter.classList.toggle('visible');
         cell.querySelector('.title-container').classList.toggle("hidden");
-        container.classList.toggle('invisible');
-    }
 
-    // delay pour coincider avec l'animation de la cellule et du content (voir css)
+        if (mask && index ===2 ) {
+            mask = false;
+        }
+        
+        else {
+            filter.classList.toggle('visible');
+            container.classList.toggle('invisible');
+            mask = false;
+        }
+    };
+
+    // Ajout du delay pour faire coincider la fin d'aniamtion de .HomeCell/Filtre avec le début d'animation du contenu (cf css)
     Array.from(container.children).forEach((child, index) => {
         setTimeout(() => {
             child.classList.toggle('invisible');
             child.classList.toggle('ContentAnimation');
-        }, delay + (index * 200));
+            }, delay + (index * 200));
     });
 };
 
@@ -141,28 +137,7 @@ homeCells.forEach((cell, index) => {
     let filter = HomeCellsFilter[index];
     let container = HomeCellsContainer[index];
 
-    // écran tactile = mobile / tablette
-    // if ('ontouchstart' in window) {
-
-    //     cell.addEventListener('touchstart', (event) => {
-    //         let startY = event.touches[0].clientY;
-
-    //         cell.addEventListener('touchend', (event) => {
-    //             let endY = event.touches[0].clientY;
-    //             let dy = Math.abs(endY - startY);
-
-    //             // Important de vérifier cette condition dans la fonction 'touchend' sinon exécution du if sans attendre le calcul de dy
-    //             if (dy <= 20) {
-    //                 ResetAllCells(index);
-    //                 OnCellClick(cell, filter, container);
-    //                 if (index == 2) {document.querySelector('video').play();};
-    //             };
-    //         });
-    //     });
-    // }
-
-    // écran non-tactile = ordinateur
-    // else {
+    // A priori 'mouseenter' et 'mouseleave' sont définis uniquement pour un curseur donc pas de rsique de conflit avec le tactile 
     cell.addEventListener('mouseenter', () => {
         OnCellEnter(cell, li);
     });
@@ -173,14 +148,35 @@ homeCells.forEach((cell, index) => {
 
     cell.addEventListener('click', () => {
         ResetAllCells(index);
-        OnCellClick(cell, filter, container);
+        OnCellClick(cell, filter, container, index);
     });
-    // };
 });
 
+
+let mask;
+let filter_simu = document.getElementById('filtre-simu');
+let container_simu = document.getElementById('container-simu');
+
+// document.querySelector('#hide-content-btn').addEventListener('click', (event) => {
+//     // Par défaut l'évenement clic est détecté par tous les éléments peu importe leur z-index,
+//     event.stopPropagation(); // -> empêche l'appel de 'OnCellClick'. 
+
+//     container_simu.classList.add('invisible');
+//     filter_simu.classList.remove('visible');
+//     mask = true;
+// });
+
+const video = document.getElementById("video-CFD");
+
 document.querySelector('#hide-content-btn').addEventListener('click', (event) => {
-    event.stopPropagation(); // Empêche l'éxécution de la fonction 'OnCellClick'.
-    let parentDiv = event.target.parentNode; // récupère la div parent de classe .HomeCellContent.
-    parentDiv.classList.add('invisible');
-    parentDiv.parentNode.classList.add('invisible');
+    // Par défaut l'évenement clic est détecté par tous les éléments peu importe leur z-index,
+    event.stopPropagation(); // -> empêche l'appel de 'OnCellClick'. 
+    video.classList.add('visible');
+    video.style.zIndex = 1001;
+    video.play();
+
+    video.addEventListener("ended", function() {
+        video.style.zIndex = 0;
+        video.classList.remove('visible');
+    });
 });
