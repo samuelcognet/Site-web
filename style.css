@@ -179,7 +179,7 @@ main .container {
     justify-content: center;
     align-items: center;
     background: linear-gradient(rgba(2, 20, 58, .7) 100%, rgba(7, 14, 29, 0) 100%);
-    opacity: 0.5;
+    opacity: 0.25;
 }
 
 .HomeCellFilter {
@@ -566,10 +566,14 @@ footer a, i {
 
     /* Ajoute l'effet d'expansion */
     .HomeCell.expanded {
-        height: 350px; 
+        display: block;
+        overflow: visible;
+        max-height: 400px;
+        padding-bottom: 2em; 
     }
 
     .HomeCellContainer {
+        position: relative;
         top: 0;
         margin-top: 2em;
         padding: 0 1em;
